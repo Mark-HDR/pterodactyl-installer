@@ -122,7 +122,7 @@ if [ -z "$FQDN" ] || [ -z "$SSL" ] || [ -z "$EMAIL" ] || [ -z "$USERNAME" ] || [
 fi
 
 echo "Checking your OS.."
-if { [ "$dist" = "ubuntu" ] && [ "$version" = "20.04" ]; } || [ "$version" = "22.04" ]; } || { [ "$dist" = "debian" ] && [ "$version" = "11" ] || [ "$version" = "12" ]; }; then
+if [ "$dist" = "ubuntu" ] && [ "$version" = "20.04" ] || [ "$version" = "22.04" ] || [ "$dist" = "debian" ] && [ "$version" = "11" ] || [ "$version" = "12" ]; then
     echo "Welcome to Autoinstall of Pterodactyl Panel"
     echo "Quick summary before the install begins:"
     echo ""
