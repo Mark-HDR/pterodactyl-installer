@@ -143,7 +143,7 @@ if [ -z "$FQDN" ] || [ -z "$SSL" ] || [ -z "$EMAIL" ] || [ -z "$USERNAME" ] || [
 fi
 
 echo "Checking your OS..."
-if [[ "$dist:$version" =~ ubuntu:20.04|debian:11|debian:12 ]]; then
+if [[ "$dist:$version" =~ ubuntu:20.04|ubuntu:22.04|debian:11|debian:12 ]]; then
     echo "Starting Pterodactyl Panel auto-installation..."
     sleep 5
     panel_install
