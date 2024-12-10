@@ -1,6 +1,5 @@
 #!/bin/bash
 #!/usr/bin/env bash
-# tes
 dist="$(. /etc/os-release && echo "$ID")"
 version="$(. /etc/os-release && echo "$VERSION_ID")"
 
@@ -48,16 +47,7 @@ panel_install(){
     echo "" 
     apt update
     apt install certbot -y
-    if  [ "$dist" =  "ubuntu" ] && [ "$version" = "20.04" ]; then
-        apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
-        LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-        curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor --batch --yes -o /usr/share/keyrings/redis-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-        curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-        apt update
-        sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
-    fi
-        if  [ "$dist" =  "ubuntu" ] && [ "$version" = "22.04" ]; then
+    if [ "$dist" = "ubuntu" ] && { [ "$version" = "20.04" ] || [ "$version" = "22.04" ]; }; then
         apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
         LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
         curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor --batch --yes -o /usr/share/keyrings/redis-archive-keyring.gpg
