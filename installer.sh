@@ -127,8 +127,10 @@ PASSWORD=$(echo $7)
 WINGS=$(echo $8)
 
 if [ -z "$FQDN" ] || [ -z "$SSL" ] || [ -z "$EMAIL" ] || [ -z "$USERNAME" ] || [ -z "$FIRSTNAME" ] || [ -z "$LASTNAME" ] || [ -z "$PASSWORD" ] || [ -z "$WINGS" ]; then
-    echo "Error! The usage of this script is incorrect."
+    echo "Error: Missing arguments. Please provide all required inputs."
     exit 1
+else
+    panel_install
 fi
 
 echo "Checking your OS.."
