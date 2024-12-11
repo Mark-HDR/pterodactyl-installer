@@ -1,5 +1,6 @@
 #!/bin/bash
 #!/usr/bin/env bash
+# tes
 dist="$(. /etc/os-release && echo "$ID")"
 version="$(. /etc/os-release && echo "$VERSION_ID")"
 
@@ -33,21 +34,30 @@ panel_conf(){
         certbot certonly --standalone -d $FQDN --staple-ocsp --no-eff-email -m $EMAIL --agree-tos
         systemctl start nginx
         finish
-        fi
+    fi
     if  [ "$SSL" =  "false" ]; then
         rm -rf /etc/nginx/sites-enabled/default
         curl -o /etc/nginx/sites-enabled/pterodactyl.conf https://raw.githubusercontent.com/amiruldev20/ippanel/main/configs/pterodactyl-nginx.conf
         sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/pterodactyl.conf
         systemctl restart nginx
         finish
-        fi
+    fi
 }
 
 panel_install(){
     echo "" 
     apt update
     apt install certbot -y
-    if [ "$dist" = "ubuntu" ] && { [ "$version" = "20.04" ] || [ "$version" = "22.04" ]; }; then
+    if  [ "$dist " = "ubuntu" ] && [ "$version" = "20.04" ]; then
+        apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
+        LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+        curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor --batch --yes -o /usr/share/keyrings/redis-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+        curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+        apt update
+        sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
+    fi
+    if [ "$dist" = "ubuntu" ] && [ "$version" = "22.04" ]; then
         apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
         LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
         curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor --batch --yes -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -78,7 +88,7 @@ panel_install(){
     apt install -y mariadb-server tar unzip git redis-server
     sed -i 's/character-set-collations = utf8mb4=uca1400_ai_ci/character-set-collations = utf8mb4=utf8mb4_general_ci/' /etc/mysql/mariadb.conf.d/50-server.cnf
     systemctl restart mariadb
-    apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip}
+    apt -y install php8 .1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip}
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     pause 0.5s
     mkdir /var
@@ -107,22 +117,22 @@ PASSWORD=`echo $7`
 WINGS=`echo $8`
 
 if [ -z "$FQDN" ] || [ -z "$SSL" ] || [ -z "$EMAIL" ] || [ -z "$USERNAME" ] || [ -z "$FIRSTNAME" ] || [ -z "$LASTNAME" ] || [ -z "$PASSWORD" ] || [ -z "$WINGS" ]; then
-    echo "Error! THe usage of this script is incorrect."
+    echo "Error! The usage of this script is incorrect."
     exit 1
 fi
 
 echo "Checking your OS.."
-if [ "$dist" = "ubuntu" ] && [ "$version" = "20.04" ] || [ "$version" = "22.04" ] || [ "$dist" = "debian" ] && [ "$version" = "11" ] || [ "$version" = "12" ]; then
+if { [ "$dist" = "ubuntu" ] && { [ "$version" = "20.04" ] || [ "$version" = "22.04" ]; } } || { [ "$dist" = "debian" ] && { [ "$version" = "11" ] || [ "$version" = "12" ]; } }; then
     echo "Welcome to Autoinstall of Pterodactyl Panel"
     echo "Quick summary before the install begins:"
     echo ""
     echo "FQDN (URL): $FQDN"
     echo "SSL: $SSL"
     echo "Preselected webserver: NGINX"
-    echo "Email $EMAIL"
-    echo "Username $USERNAME"
-    echo "First name $FIRSTNAME"
-    echo "Last name $LASTNAME"
+    echo "Email: $EMAIL"
+    echo "Username: $USERNAME"
+    echo "First name: $FIRSTNAME"
+    echo "Last name: $LASTNAME"
     echo "Password: $PASSWORD"
     echo "Wings install: $WINGS"
     echo ""
@@ -132,4 +142,3 @@ if [ "$dist" = "ubuntu" ] && [ "$version" = "20.04" ] || [ "$version" = "22.04" 
 else
     echo "Your OS, $dist $version, is not supported"
     exit 1
-fi
